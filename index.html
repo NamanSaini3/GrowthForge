@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GrowthForge — Grow Faster. Build Smarter.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #0d0d0d;
+    --off-white: #f5f2ed;
+    --cream: #ede9e1;
+    --forge: #e85d1a;
+    --forge-dark: #c44d10;
+    --forge-glow: rgba(232,93,26,0.18);
+    --muted: #6b6560;
+    --border: rgba(13,13,13,0.1);
+    --card-bg: #ffffff;
+    --radius: 16px;
+  }
+ 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  html { scroll-behavior: smooth; }
+ 
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--ink);
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+ 
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+  }
+ 
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.1rem 5%;
+    background: rgba(245,242,237,0.85);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.25rem;
+    letter-spacing: -0.03em; color: var(--ink);
+    display: flex; align-items: center; gap: 0.45rem;
+    text-decoration: none;
+  }
+  .nav-logo span {
+    display: inline-block; width: 9px; height: 9px;
+    background: var(--forge); border-radius: 50%; margin-bottom: 1px;
+  }
+  .nav-cta {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.85rem; letter-spacing: 0.02em;
+    background: var(--ink); color: var(--off-white);
+    border: none; padding: 0.6rem 1.4rem; border-radius: 100px;
+    cursor: pointer; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .nav-cta:hover { background: var(--forge); transform: translateY(-1px); }
+ 
+  /* ── HERO ── */
+  .hero {
+    min-height: 100svh;
+    display: grid; place-items: center;
+    padding: 10rem 5% 6rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-ring {
+    position: absolute;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--forge-glow) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: pulse 6s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1.12); }
+  }
+ 
+  .hero-inner {
+    max-width: 860px; text-align: center;
+    position: relative; z-index: 1;
+    animation: fadeUp 0.9s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: var(--cream); border: 1px solid var(--border);
+    padding: 0.4rem 1rem; border-radius: 100px;
+    font-size: 0.8rem; font-weight: 500; color: var(--muted);
+    margin-bottom: 2rem; letter-spacing: 0.04em;
+    animation: fadeUp 0.9s 0.1s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .hero-badge::before {
+    content: ''; width: 7px; height: 7px;
+    background: var(--forge); border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+ 
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -0.03em;
+    animation: fadeUp 0.9s 0.2s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .hero h1 em {
+    font-style: normal; color: var(--forge);
+    position: relative;
+  }
+  .hero h1 em::after {
+    content: '';
+    position: absolute; bottom: 2px; left: 0; right: 0; height: 3px;
+    background: var(--forge); border-radius: 2px; opacity: 0.4;
+  }
+ 
+  .hero-sub {
+    margin-top: 1.2rem;
+    font-size: clamp(0.9rem, 1.5vw, 1rem);
+    color: var(--muted); font-weight: 300; max-width: 520px; margin-inline: auto;
+    animation: fadeUp 0.9s 0.35s cubic-bezier(0.22,1,0.36,1) both;
+  }
+ 
+  .hero-actions {
+    margin-top: 2.8rem;
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp 0.9s 0.5s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .btn-primary {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    background: var(--forge); color: #fff;
+    padding: 0.85rem 1.8rem; border-radius: 100px;
+    border: none; cursor: pointer; text-decoration: none;
+    box-shadow: 0 4px 24px var(--forge-glow);
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+  .btn-primary:hover {
+    background: var(--forge-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(232,93,26,0.3);
+  }
+  .btn-ghost {
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 0.9rem;
+    color: var(--ink); background: transparent;
+    padding: 0.85rem 1.6rem; border-radius: 100px;
+    border: 1.5px solid var(--border);
+    cursor: pointer; text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .btn-ghost:hover {
+    border-color: var(--ink); background: var(--cream);
+    transform: translateY(-2px);
+  }
+ 
+  .hero-social-proof {
+    margin-top: 3.5rem;
+    display: flex; align-items: center; justify-content: center; gap: 1rem;
+    font-size: 0.85rem; color: var(--muted);
+    animation: fadeUp 0.9s 0.65s cubic-bezier(0.22,1,0.36,1) both;
+  }
+  .avatar-stack { display: flex; }
+  .avatar-stack .av {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 2.5px solid var(--off-white);
+    margin-left: -9px; overflow: hidden;
+    background: linear-gradient(135deg, #e0d6c8, #c5bfb3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.75rem; font-weight: 600; color: var(--muted);
+  }
+  .av:first-child { margin-left: 0; }
+  .stars { color: var(--forge); letter-spacing: -1px; font-size: 1rem; }
+ 
+  /* ── SECTION WRAPPER ── */
+  section { padding: 6rem 5%; position: relative; z-index: 1; }
+  .section-label {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--forge);
+    margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 800; line-height: 1.15;
+    letter-spacing: -0.02em; max-width: 560px;
+  }
+  .section-title.centered { text-align: center; margin-inline: auto; max-width: 640px; }
+ 
+  /* ── BENEFITS ── */
+  .benefits { background: var(--ink); color: var(--off-white); }
+  .benefits .section-label { color: var(--forge); }
+  .benefits .section-title { color: var(--off-white); }
+ 
+  .benefits-header { margin-bottom: 3.5rem; }
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5px;
+    border: 1.5px solid rgba(255,255,255,0.07);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .benefit-card {
+    background: rgba(255,255,255,0.04);
+    padding: 2.5rem 2rem;
+    transition: background 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .benefit-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--forge-glow), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .benefit-card:hover { background: rgba(255,255,255,0.07); }
+  .benefit-card:hover::before { opacity: 1; }
+ 
+  .benefit-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: var(--forge-glow); border: 1px solid rgba(232,93,26,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 1.5rem;
+  }
+  .benefit-card h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.15rem;
+    margin-bottom: 0.7rem; letter-spacing: -0.02em;
+    color: #fff;
+  }
+  .benefit-card p { font-size: 0.95rem; color: rgba(245,242,237,0.6); line-height: 1.65; }
+ 
+  /* ── WHO IT'S FOR ── */
+  .audience { background: var(--cream); }
+  .audience-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2rem; margin-top: 3rem; align-items: center;
+  }
+  .audience-list { display: flex; flex-direction: column; gap: 1rem; }
+  .audience-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 1.2rem 1.5rem;
+    background: var(--card-bg); border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+  .audience-item:hover {
+    border-color: var(--forge);
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .ai-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--forge); flex-shrink: 0; margin-top: 6px;
+  }
+  .audience-item strong { font-weight: 600; display: block; margin-bottom: 0.2rem; }
+  .audience-item span { font-size: 0.9rem; color: var(--muted); }
+  .audience-visual {
+    background: var(--ink);
+    border-radius: var(--radius); padding: 2.5rem;
+    color: var(--off-white);
+    display: flex; flex-direction: column; gap: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .audience-visual::after {
+    content: 'GF';
+    position: absolute; bottom: -20px; right: -10px;
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 8rem; letter-spacing: -0.05em;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+  }
+  .av-stat { position: relative; z-index: 1; }
+  .av-stat .num {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 2rem; color: var(--forge); letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .av-stat .label { font-size: 0.85rem; color: rgba(245,242,237,0.55); margin-top: 0.3rem; }
+  .av-divider { height: 1px; background: rgba(255,255,255,0.08); }
+ 
+  /* ── HOW IT WORKS ── */
+  .how {
+    background: var(--off-white);
+  }
+  .how-header { text-align: center; margin-bottom: 4rem; }
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem; max-width: 1000px; margin-inline: auto;
+    position: relative;
+  }
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 2.4rem; left: calc(16.666% + 1rem); right: calc(16.666% + 1rem);
+    height: 1.5px;
+    background: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 8px, transparent 8px, transparent 16px);
+  }
+  .step {
+    text-align: center; padding: 2rem 1.5rem;
+    background: var(--card-bg);
+    border-radius: var(--radius); border: 1px solid var(--border);
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+    position: relative;
+  }
+  .step:hover {
+    border-color: var(--forge);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+    transform: translateY(-4px);
+  }
+  .step-num {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--forge); color: #fff;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    box-shadow: 0 4px 16px var(--forge-glow);
+  }
+  .step h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem;
+    margin-bottom: 0.7rem; letter-spacing: -0.02em;
+  }
+  .step p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
+ 
+  /* ── TESTIMONIAL ── */
+  .testimonial { background: var(--cream); }
+  .testimonial-inner {
+    max-width: 760px; margin-inline: auto; text-align: center;
+  }
+  .testi-quote {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: clamp(1rem, 2vw, 1.35rem);
+    line-height: 1.4; letter-spacing: -0.02em;
+    margin: 1.2rem 0 2rem;
+    position: relative;
+  }
+  .testi-quote::before {
+    content: '\201C';
+    display: block;
+    font-size: 5rem; color: var(--forge); line-height: 0.7;
+    margin-bottom: 0.5rem;
+    font-family: Georgia, serif;
+  }
+  .testi-author {
+    display: flex; align-items: center; gap: 1rem; justify-content: center;
+  }
+  .author-avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--forge), #f5a261);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 1.1rem; color: #fff;
+    flex-shrink: 0;
+  }
+  .author-info strong { font-weight: 600; display: block; }
+  .author-info span { font-size: 0.85rem; color: var(--muted); }
+  .testi-stars { color: var(--forge); font-size: 1.1rem; margin-bottom: 0.5rem; }
+ 
+  /* ── CTA SECTION ── */
+  .cta-section {
+    background: var(--ink); color: var(--off-white);
+    text-align: center;
+  }
+  .cta-section .section-title { color: #fff; }
+  .cta-sub {
+    margin: 1.2rem auto 2.8rem;
+    max-width: 500px; font-size: 1.05rem;
+    color: rgba(245,242,237,0.6);
+    font-weight: 300;
+  }
+  .cta-form {
+    display: flex; gap: 0.8rem; justify-content: center; flex-wrap: wrap;
+    max-width: 520px; margin-inline: auto;
+  }
+  .cta-form input[type="email"] {
+    flex: 1; min-width: 220px;
+    background: rgba(255,255,255,0.06);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    color: var(--off-white); border-radius: 100px;
+    padding: 0.95rem 1.5rem; font-size: 0.95rem;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .cta-form input::placeholder { color: rgba(245,242,237,0.35); }
+  .cta-form input:focus { border-color: var(--forge); }
+  .cta-form .btn-primary { white-space: nowrap; }
+  .cta-note { margin-top: 1.2rem; font-size: 0.8rem; color: rgba(245,242,237,0.35); }
+ 
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem 5%; display: flex;
+    align-items: center; justify-content: space-between; flex-wrap: gap;
+    gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 1rem; color: rgba(245,242,237,0.5);
+    letter-spacing: -0.03em;
+  }
+  footer p { font-size: 0.8rem; color: rgba(245,242,237,0.25); }
+ 
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+ 
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .audience-grid { grid-template-columns: 1fr; }
+    .audience-visual { display: none; }
+    .steps { grid-template-columns: 1fr; }
+    .steps::before { display: none; }
+    nav .nav-cta { padding: 0.5rem 1rem; font-size: 0.8rem; }
+  }
+ 
+  /* ── SUCCESS STATE ── */
+  .form-success {
+    display: none; padding: 1.2rem 2rem;
+    background: rgba(232,93,26,0.12); border: 1px solid var(--forge);
+    border-radius: 100px; color: var(--off-white);
+    font-family: 'Syne', sans-serif; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo"><span></span>GrowthForge</a>
+  <a href="#book" class="nav-cta">Book a Free Call →</a>
+</nav>
+ 
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-ring"></div>
+  <div class="hero-inner">
+    <div class="hero-badge">Now accepting new clients · Limited spots</div>
+    <h1>Grow your<br/><em>creator business</em><br/>with less guesswork</h1>
+    <p class="hero-sub">GrowthForge equips creators and entrepreneurs with digital tools and proven strategies to go from traction to momentum — faster than you thought possible.</p>
+    <div class="hero-actions">
+      <a href="#book" class="btn-primary">Book a Free Strategy Call</a>
+      <a href="#how" class="btn-ghost">See how it works</a>
+    </div>
+    <div class="hero-social-proof">
+      <div class="avatar-stack">
+        <div class="av">JR</div>
+        <div class="av">ML</div>
+        <div class="av">SK</div>
+        <div class="av">TC</div>
+        <div class="av">+</div>
+      </div>
+      <div>
+        <div class="stars">★★★★★</div>
+        Trusted by 2,400+ creators
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- BENEFITS -->
+<section class="benefits">
+  <div class="benefits-header reveal">
+    <div class="section-label">Why GrowthForge</div>
+    <h2 class="section-title">Everything you need.<br/>Nothing you don't.</h2>
+  </div>
+  <div class="benefits-grid">
+    <div class="benefit-card reveal">
+      <div class="benefit-icon">⚡</div>
+      <h3>Fast-Track Your Growth</h3>
+      <p>Skip the trial-and-error phase. Our battle-tested playbooks cut your path to revenue in half, letting you focus on what matters — creating.</p>
+    </div>
+    <div class="benefit-card reveal reveal-delay-1">
+      <div class="benefit-icon">🛠</div>
+      <h3>Smarter Digital Tools</h3>
+      <p>We hand-pick and configure the right tools for your business model. No bloated stacks. Just a lean, powerful setup that works from day one.</p>
+    </div>
+    <div class="benefit-card reveal reveal-delay-2">
+      <div class="benefit-icon">📈</div>
+      <h3>Data-Driven Decisions</h3>
+      <p>Turn your content metrics into a roadmap. We help you read the signals your audience is already sending and build on what's actually working.</p>
+    </div>
+  </div>
+</section>
+ 
+<!-- WHO IT'S FOR -->
+<section class="audience">
+  <div class="reveal">
+    <div class="section-label">Who it's for</div>
+    <h2 class="section-title">Built for ambitious builders</h2>
+  </div>
+  <div class="audience-grid">
+    <div class="audience-list">
+      <div class="audience-item reveal">
+        <div class="ai-dot"></div>
+        <div>
+          <strong>Content Creators</strong>
+          <span>YouTube, TikTok, Instagram — ready to monetize your audience and build beyond the algorithm.</span>
+        </div>
+      </div>
+      <div class="audience-item reveal reveal-delay-1">
+        <div class="ai-dot"></div>
+        <div>
+          <strong>Solopreneurs & Coaches</strong>
+          <span>Selling knowledge or services and want systems that scale without burning out.</span>
+        </div>
+      </div>
+      <div class="audience-item reveal reveal-delay-2">
+        <div class="ai-dot"></div>
+        <div>
+          <strong>Early-stage Founders</strong>
+          <span>Building in public and need proven growth loops before your first big launch.</span>
+        </div>
+      </div>
+      <div class="audience-item reveal reveal-delay-3">
+        <div class="ai-dot"></div>
+        <div>
+          <strong>Newsletter & Course Builders</strong>
+          <span>Growing a subscription business and want to convert subscribers into buyers, consistently.</span>
+        </div>
+      </div>
+    </div>
+    <div class="audience-visual reveal reveal-delay-1">
+      <div class="av-stat">
+        <div class="num">3.2×</div>
+        <div class="label">Average revenue growth within 90 days</div>
+      </div>
+      <div class="av-divider"></div>
+      <div class="av-stat">
+        <div class="num">14 days</div>
+        <div class="label">Average time to first system deployed</div>
+      </div>
+      <div class="av-divider"></div>
+      <div class="av-stat">
+        <div class="num">2,400+</div>
+        <div class="label">Creators and entrepreneurs helped</div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-header reveal">
+    <div class="section-label" style="text-align:center">The Process</div>
+    <h2 class="section-title centered">Three steps to unstoppable momentum</h2>
+  </div>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">1</div>
+      <h3>Audit & Align</h3>
+      <p>We start with a deep-dive into your current setup — content, tools, revenue, audience. Then we map your clearest path forward together.</p>
+    </div>
+    <div class="step reveal reveal-delay-1">
+      <div class="step-num">2</div>
+      <h3>Build Your System</h3>
+      <p>We implement your custom growth stack — funnels, automations, content systems — configured for your niche and goals, not someone else's.</p>
+    </div>
+    <div class="step reveal reveal-delay-2">
+      <div class="step-num">3</div>
+      <h3>Scale & Optimize</h3>
+      <p>With your system live, we iterate weekly. Review the numbers, double down on wins, and eliminate what drains your time and energy.</p>
+    </div>
+  </div>
+</section>
+ 
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="testimonial-inner">
+    <div class="testi-stars reveal">★★★★★</div>
+    <blockquote class="testi-quote reveal">
+      GrowthForge didn't just give me a strategy — they gave me a business. In 60 days we tripled my newsletter revenue and I finally feel in control of where things are going.
+    </blockquote>
+    <div class="testi-author reveal">
+      <div class="author-avatar">MK</div>
+      <div class="author-info">
+        <strong>Marcus K.</strong>
+        <span>Creator & Course Founder · 42K subscribers</span>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- CTA / CONTACT -->
+<section class="cta-section" id="book">
+  <div class="section-label" style="color: var(--forge); text-align:center; margin-bottom: 0.8rem;" >Get Started</div>
+  <h2 class="section-title centered reveal" style="color:#fff">
+    Ready to forge your growth?
+  </h2>
+  <p class="cta-sub reveal">
+    Book a free 30-minute strategy call. No pitch, no pressure — just clarity on your next move.
+  </p>
+  <div class="cta-form reveal" id="cta-form">
+    <input type="email" id="email-input" placeholder="your@email.com" autocomplete="email" />
+    <button class="btn-primary" onclick="handleSubmit()">Book My Free Call →</button>
+  </div>
+  <div class="form-success" id="form-success">
+    ✓ You're in! Check your inbox for next steps.
+  </div>
+  <p class="cta-note reveal">No spam, ever. Unsubscribe anytime.</p>
+</section>
+ 
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">GrowthForge</div>
+  <p>© 2026 GrowthForge. All rights reserved.</p>
+</footer>
+ 
+<script>
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+ 
+  // Form submit
+  function handleSubmit() {
+    const email = document.getElementById('email-input').value.trim();
+    if (!email || !email.includes('@')) {
+      document.getElementById('email-input').style.borderColor = '#e85d1a';
+      document.getElementById('email-input').focus();
+      return;
+    }
+    document.getElementById('cta-form').style.display = 'none';
+    const s = document.getElementById('form-success');
+    s.style.display = 'inline-block';
+    s.style.animation = 'fadeUp 0.6s cubic-bezier(0.22,1,0.36,1) both';
+  }
+ 
+  // Enter key on input
+  document.getElementById('email-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSubmit();
+  });
+</script>
+</body>
+</html>
